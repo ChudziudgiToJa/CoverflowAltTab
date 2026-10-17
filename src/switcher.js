@@ -574,7 +574,17 @@ export class Switcher {
         this._currentIndex = value;
     }
 
+    _isWaitingForInitialDelay() {
+        return this._parent === null && this._initialDelayTimeoutId !== 0;
+    }
+
     _next() {
+        // Previews do not exist until the initial delay elapses; remember the
+        // step so a quick Alt+Tab+Tab still lands on the right window.
+        if (this._isWaitingForInitialDelay()) {
+            this._setCurrentIndex((this._currentIndex + 1) % this._windows.length);
+            return;
+        }
         if (this._parent === null) this._manager.platform.dimBackground();
         this._stopClosing();
         if (this._windows.length <= 1) {
@@ -595,6 +605,10 @@ export class Switcher {
     }
 
     _previous() {
+        if (this._isWaitingForInitialDelay()) {
+            this._setCurrentIndex((this._currentIndex + this._windows.length - 1) % this._windows.length);
+            return;
+        }
         if (this._parent ===  null) this._manager.platform.dimBackground();
         this._stopClosing();
         if (this._windows.length <= 1) {
@@ -884,7 +898,7 @@ export class Switcher {
         switch(event.get_key_symbol()) {
             case Clutter.KEY_q:
             case Clutter.KEY_Q:
-            case Clutter.F4:
+            case Clutter.KEY_F4:
                 if (!this._qPressed) {
                     this._qPressed = true;
                     this.removeSelectedWindow(this._windows[this._currentIndex]);
@@ -896,27 +910,22 @@ export class Switcher {
                 return true;
 
             case Clutter.KEY_Escape:
-            case Clutter.Escape:
                 // Esc -> close CoverFlow
                 this._activateWithoutSelection();
                 return true;
 
             case Clutter.KEY_Right:
-            case Clutter.Right:
                 // Right/Down -> navigate to next preview
                 this._next();
                 return true;
 
             case Clutter.KEY_Left:
-            case Clutter.Left:
                 // Left/Up -> navigate to previous preview
                 this._previous();
                 return true;
 
             case Clutter.KEY_d:
             case Clutter.KEY_D:
-            case Clutter.d:
-            case Clutter.D:
                 // D -> Show desktop
                 this._showDesktop();
                 return true;
@@ -960,7 +969,7 @@ export class Switcher {
         switch(event.get_key_symbol()) {
             case Clutter.KEY_q:
             case Clutter.KEY_Q:
-            case Clutter.F4:
+            case Clutter.KEY_F4:
                     this._qPressed = false;
         }
 

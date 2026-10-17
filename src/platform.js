@@ -712,9 +712,9 @@ export class PlatformGnomeShell extends AbstractPlatform {
                         }
                     } else if (visibility === SwitcherVisibility.HIDING) {
                         dock._intellihide.enable();
-                        dock._updateDashVisibility();
+                        this._updateDashToDockVisibility(dock);
                     } else if (visibility === SwitcherVisibility.HIDDEN) {
-                        dock._updateDashVisibility();
+                        this._updateDashToDockVisibility(dock);
                     }
                 }
 
@@ -723,6 +723,15 @@ export class PlatformGnomeShell extends AbstractPlatform {
         } catch (e) {
             this._logger.error(e);
         }
+    }
+
+    // Newer Dash to Dock releases renamed _updateDashVisibility() to the
+    // public updateDashVisibility(); support both so the dock is restored.
+    _updateDashToDockVisibility(dock) {
+        if (typeof dock.updateDashVisibility === 'function')
+            dock.updateDashVisibility();
+        else
+            dock._updateDashVisibility();
     }
 
     getPanels() {

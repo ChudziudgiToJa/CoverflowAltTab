@@ -532,7 +532,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         });
 
         let reset_button = this.buildResetButton();
-        reset_button.connect("clicked", function (_widget) {
+        reset_button.connect("clicked", _widget => {
             this.settings.reset("use-tint");
         });
         color_row.add_suffix(reset_button);
@@ -658,7 +658,7 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         });
 
         let highlight_reset_button = this.buildResetButton();
-        highlight_reset_button.connect("clicked", function (_widget) {
+        highlight_reset_button.connect("clicked", _widget => {
             this.settings.reset("highlight-mouse-over");
         });
         highlight_color_row.add_suffix(highlight_reset_button);
@@ -748,7 +748,6 @@ export default class CoverflowAltTabPreferences extends ExtensionPreferences {
         contribution_page.add(contribute_icon_pref_group);
         contribution_page.add(links_pref_group);
         contribution_page.add(support_pref_group);
-        contribution_page.add(settings_pref_group);
 
         window.add(general_page);
         window.add(animation_page);
